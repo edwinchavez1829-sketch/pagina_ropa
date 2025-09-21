@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eunice Exclusiva - Donde la moda cobra vida</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #f7e1a8, #e8a4a4, #d1c4e9); color: #333; min-height: 100vh; margin:0; padding:0; }
+    .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/3da25492-83e3-4513-a347-716e48479355.png'); background-size: cover; background-position: center; }
+    .product-card img { transition: transform 0.3s ease; cursor:pointer; border-radius:0.5rem; }
+    .product-card:hover img { transform: scale(1.05); }
+    #image-modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; flex-direction:column; }
+    #image-modal img { max-width:90vw; max-height:70vh; border-radius:0.5rem; box-shadow:0 0 20px rgba(255,255,255,0.3); margin-bottom:10px; touch-action: pan-y; cursor: grab; }
+    #image-modal .close-btn { position:absolute; top:1rem; right:1rem; background:#fff; border:none; font-size:1.5rem; font-weight:bold; border-radius:0.5rem; width:2.5rem; height:2.5rem; cursor:pointer; line-height:1; text-align:center; padding:0; }
+    .dropdown-btn { background-color:#fff; border:2px solid #ec4899; color:#ec4899; padding:0.5rem 1rem; border-radius:0.5rem; font-weight:500; display:flex; align-items:center; justify-content:space-between; width:180px; transition:all 0.2s; }
+    .dropdown-btn:hover { background-color:#ec4899; color:#fff; }
+    .dropdown-menu { display:none; position:absolute; right:0; margin-top:0.5rem; background-color:#fff; border:1px solid #ddd; border-radius:0.5rem; box-shadow:0 5px 15px rgba(0,0,0,0.2); z-index:50; min-width:180px; }
+    .dropdown-menu a { display:block; padding:0.5rem 1rem; color:#333; font-size:0.95rem; text-decoration:none; transition:all 0.2s; }
+    .dropdown-menu a:hover { background-color:#ec4899; color:#fff; border-radius:0.5rem; }
+    @media (max-width: 1024px) { .products-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 768px) { nav { width:100%; display:flex; justify-content:center; margin-top:0.5rem; } .dropdown-btn { width:100%; max-width:220px; } .products-grid { grid-template-columns:1fr; } .hero h2 { font-size:2rem; } .hero p { font-size:1rem; } .product-card img { max-height:200px; } header div h1 { font-size:1.5rem; } header div p { font-size:0.85rem; } }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+      <div class="text-center md:text-left">
+        <h1 class="text-2xl font-bold text-pink-600">Eunice Exclusiva</h1>
+        <p class="text-sm text-gray-600">“Donde la moda cobra vida”</p>
+      </div>
+      <div class="flex items-center mt-2 md:mt-0 space-x-2">
+        <nav class="relative">
+          <div class="relative inline-block text-left">
+            <button id="dropdown-btn" class="dropdown-btn">
+              Categorías
+              <svg class="ml-2 h-5 w-5 text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div id="dropdown-menu" class="dropdown-menu">
+              <a href="#" class="category-link" data-category="all">Todas</a>
+              <a href="#" class="category-link" data-category="mujer">Ropa para Mujer</a>
+              <a href="#" class="category-link" data-category="ninos">Ropa para Niños</a>
+              <a href="#" class="category-link" data-category="hombre">Ropa para Hombre</a>
+              <a href="#" class="category-link" data-category="accesorios">Accesorios</a>
+              <a href="#" class="category-link" data-category="hogar">Hogar y Textiles</a>
+              <a href="#" class="category-link" data-category="ofertas">Ofertas y Promociones</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero h-96 flex items-center justify-center text-center text-white px-4">
+    <div>
+      <h2 class="text-4xl font-bold mb-4">Bienvenido a Eunice Exclusiva</h2>
+      <p class="text-xl">Ropa usada de calidad a precios accesibles</p>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS -->
+  <main class="container mx-auto px-4 py-8">
+    <div id="products" class="products-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
+
+  <!-- MODAL IMAGEN -->
+  <div id="image-modal" class="flex">
+    <button class="close-btn" aria-label="Cerrar">&times;</button>
+    <img src="" alt="Imagen ampliada del producto" />
+  </div>
+
+  <footer class="bg-white text-center py-4"></footer>
+
+  <script>
+    // Productos predefinidos con hasta 4 imágenes cada uno
+    let products = [
+      {
+        id:1,
+        name:'Vestido Floral Mujer',
+        category:'mujer',
+        description:'Usado en excelentes condiciones, talla M, patrón floral vibrante.',
+        price:350.00,
+        image:[
+          'https://placehold.co/400x400/pink/white/png?text=Vestido+1',
+          'https://placehold.co/400x400/pink/white/png?text=Vestido+2',
+          'https://placehold.co/400x400/pink/white/png?text=Vestido+3',
+          'https://placehold.co/400x400/pink/white/png?text=Vestido+4'
+        ]
+      },
+      {
+        id:2,
+        name:'Sudadera Niño',
+        category:'ninos',
+        description:'Usada ligeramente, talla 8-10 años, con estampado de dinosaurios.',
+        price:220.00,
+        image:[
+          'https://placehold.co/400x400/blue/white/png?text=Sudadera+1',
+          'https://placehold.co/400x400/blue/white/png?text=Sudadera+2',
+          'https://placehold.co/400x400/blue/white/png?text=Sudadera+3',
+          'https://placehold.co/400x400/blue/white/png?text=Sudadera+4'
+        ]
+      },
+      {
+        id:3,
+        name:'Camisa Hombre',
+        category:'hombre',
+        description:'Camisa de algodón, talla L, usada solo una vez.',
+        price:280.00,
+        image:[
+          'https://placehold.co/400x400/green/white/png?text=Camisa+1',
+          'https://placehold.co/400x400/green/white/png?text=Camisa+2',
+          'https://placehold.co/400x400/green/white/png?text=Camisa+3',
+          'https://placehold.co/400x400/green/white/png?text=Camisa+4'
+        ]
+      },
+      {
+        id:4,
+        name:'Bufanda Mujer',
+        category:'accesorios',
+        description:'Bufanda suave y cálida, perfecta para invierno.',
+        price:120.00,
+        image:[
+          'https://placehold.co/400x400/purple/white/png?text=Bufanda+1',
+          'https://placehold.co/400x400/purple/white/png?text=Bufanda+2',
+          'https://placehold.co/400x400/purple/white/png?text=Bufanda+3',
+          'https://placehold.co/400x400/purple/white/png?text=Bufanda+4'
+        ]
+      },
+      {
+        id:5,
+        name:'Juego de Sábanas',
+        category:'hogar',
+        description:'Sábanas de algodón para cama doble, color blanco.',
+        price:250.00,
+        image:[
+          'https://placehold.co/400x400/yellow/white/png?text=Sábanas+1',
+          'https://placehold.co/400x400/yellow/white/png?text=Sábanas+2',
+          'https://placehold.co/400x400/yellow/white/png?text=Sábanas+3',
+          'https://placehold.co/400x400/yellow/white/png?text=Sábanas+4'
+        ]
+      },
+      {
+        id:6,
+        name:'Short Hombre',
+        category:'hombre',
+        description:'Short casual, talla M, usado en buen estado.',
+        price:180.00,
+        image:[
+          'https://placehold.co/400x400/red/white/png?text=Short+1',
+          'https://placehold.co/400x400/red/white/png?text=Short+2',
+          'https://placehold.co/400x400/red/white/png?text=Short+3',
+          'https://placehold.co/400x400/red/white/png?text=Short+4'
+        ]
+      }
+    ];
+
+    // Función para mostrar productos según categoría
+    function renderProducts(filter='all'){
+      const container=document.getElementById('products'); container.innerHTML='';
+      products.forEach(p=>{
+        if(filter==='all'||p.category===filter){
+          const card=document.createElement('div'); card.className='product-card bg-white p-4 rounded shadow-md';
+          card.innerHTML=`
+            <img src="${p.image[0]}" alt="${p.name}" class="w-full h-auto max-h-72 object-contain rounded mb-4" data-productid="${p.id}" />
+            <h4 class="text-lg font-bold">${p.name}</h4>
+            <p class="text-sm text-gray-600 mb-1">Categoría: ${p.category}</p>
+            <p class="text-sm mb-1">${p.description}</p>
+            <p class="text-pink-600 font-semibold text-lg">Precio: $${p.price.toFixed(2)} USD</p>
+          `;
+          container.appendChild(card);
+        }
+      });
+      addImageClickListeners();
+    }
+
+    // Modal de imágenes con swipe/teclado/drag
+    let currentImageIndex = 0, startX = 0;
+    function addImageClickListeners(){
+      document.querySelectorAll('#products img').forEach(img=>{
+        img.addEventListener('click',()=>{
+          const modal=document.getElementById('image-modal');
+          const modalImg=modal.querySelector('img');
+          const productId=parseInt(img.dataset.productid);
+          const product=products.find(p=>p.id===productId);
+          if(!product) return;
+          currentImageIndex=0;
+          modalImg.src=product.image[currentImageIndex];
+          modal.style.display='flex';
+
+          modalImg.ontouchstart=e=>{ startX=e.touches[0].clientX; };
+          modalImg.ontouchend=e=>{
+            let endX=e.changedTouches[0].clientX;
+            if(startX-endX>50) currentImageIndex=(currentImageIndex+1)%product.image.length;
+            else if(endX-startX>50) currentImageIndex=(currentImageIndex-1+product.image.length)%product.image.length;
+            modalImg.src=product.image[currentImageIndex];
+          };
+
+          document.onkeydown=e=>{
+            if(modal.style.display==='flex'){
+              if(e.key==='ArrowRight') currentImageIndex=(currentImageIndex+1)%product.image.length;
+              else if(e.key==='ArrowLeft') currentImageIndex=(currentImageIndex-1+product.image.length)%product.image.length;
+              modalImg.src=product.image[currentImageIndex];
+            }
+          };
+
+          let isDragging=false, startMouseX=0;
+          modalImg.onmousedown=e=>{ isDragging=true; startMouseX=e.clientX; modalImg.style.cursor='grabbing'; };
+          modalImg.onmouseup=e=>{
+            if(!isDragging) return; isDragging=false; modalImg.style.cursor='grab';
+            let endMouseX=e.clientX;
+            if(startMouseX-endMouseX>50) currentImageIndex=(currentImageIndex+1)%product.image.length;
+            else if(endMouseX-startMouseX>50) currentImageIndex=(currentImageIndex-1+product.image.length)%product.image.length;
+            modalImg.src=product.image[currentImageIndex];
+          };
+        });
+      });
+    }
+
+    document.querySelector('#image-modal .close-btn').addEventListener('click',()=>{ document.getElementById('image-modal').style.display='none'; });
+    document.getElementById('image-modal').addEventListener('click',e=>{ if(e.target.id==='image-modal'){e.target.style.display='none';} });
+
+    // Filtrado por categoría
+    document.querySelectorAll('.category-link').forEach(link=>{
+      link.addEventListener('click',e=>{
+        e.preventDefault();
+        renderProducts(link.dataset.category);
+        document.getElementById('dropdown-menu').style.display='none';
+      });
+    });
+
+    document.getElementById('dropdown-btn').addEventListener('click',()=>{
+      const menu=document.getElementById('dropdown-menu');
+      menu.style.display=menu.style.display==='block'?'none':'block';
+    });
+
+    // Render inicial
+    renderProducts();
+  </script>
+</body>
+</html>
